@@ -1,0 +1,56 @@
+#JSGF V1.0;
+
+grammar scripts;
+
+public <item> = Hello |
+ I |
+ Monday |
+ a |
+ afternoon |
+ an |
+ and |
+ appointment |
+ bad |
+ be |
+ because |
+ book |
+ by |
+ calling |
+ card |
+ cheese |
+ cold |
+ credit |
+ dentist |
+ different |
+ doctor |
+ extra |
+ for |
+ got |
+ grandma |
+ have |
+ if |
+ know |
+ large |
+ let |
+ like |
+ love |
+ me |
+ message |
+ my |
+ okay |
+ on |
+ order |
+ pay |
+ pepperoni |
+ pizza |
+ please |
+ saturday |
+ see |
+ then |
+ time |
+ to |
+ very |
+ with |
+ would |
+ you |
+ your ;
