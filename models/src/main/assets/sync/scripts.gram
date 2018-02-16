@@ -2,9 +2,9 @@
 
 grammar scripts;
 
-public <item> = Hello |
- I |
- Monday |
+public <item> = hello |
+ i |
+ monday |
  a |
  afternoon |
  an |
