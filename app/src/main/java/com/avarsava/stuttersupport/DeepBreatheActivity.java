@@ -89,7 +89,7 @@ public class DeepBreatheActivity extends GameActivity {
         setContentView(screen);
 
         //dummy speech recognizer just to roll the ball
-        runRecognizerSetup((String)null, null);
+        runKeywordRecognizerSetup((String)null, null);
     }
 
     /**

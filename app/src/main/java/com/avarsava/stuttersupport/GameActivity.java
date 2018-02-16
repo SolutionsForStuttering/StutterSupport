@@ -36,6 +36,11 @@ public abstract class GameActivity extends AppCompatActivity implements Recognit
     private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
 
     /**
+     * Name for grammar-based search
+     */
+    private final String GRAMMAR_SEARCH = "gram";
+
+    /**
      * Defines time since the timer has been reset.
      */
     private long startTime;
@@ -238,7 +243,7 @@ public abstract class GameActivity extends AppCompatActivity implements Recognit
      * @param dictionary The words which the recognizer should be prepared to listen for. This
      *                   allows for faster switching between keywords.
      */
-    protected void runRecognizerSetup(final String keyword, final String[] dictionary){
+    protected void runKeywordRecognizerSetup(final String keyword, final String[] dictionary){
         if(keyword == null){
             recognizerReady();
             return;
@@ -246,7 +251,7 @@ public abstract class GameActivity extends AppCompatActivity implements Recognit
 
         String[]  newArray = {keyword};
 
-        runRecognizerSetup(newArray, dictionary);
+        runKeywordRecognizerSetup(newArray, dictionary);
     }
 
     /**
@@ -258,7 +263,7 @@ public abstract class GameActivity extends AppCompatActivity implements Recognit
      * @param dictionary The words which the recognizer should be prepared to listen for. This
      *                   allows for faster switching between keywords.
      */
-    protected void runRecognizerSetup(final String[] keywords, final String[] dictionary) {
+    protected void runKeywordRecognizerSetup(final String[] keywords, final String[] dictionary) {
         if(keywords == null){
             recognizerReady();
             return;
@@ -269,7 +274,7 @@ public abstract class GameActivity extends AppCompatActivity implements Recognit
                 try {
                     Assets assets = new Assets(GameActivity.this);
                     File assetDir = assets.syncAssets();
-                    setupRecognizer(assetDir, dictionary);
+                    setupKeywordRecognizer(assetDir, dictionary);
                 } catch (IOException e) {
                     return e;
                 }
@@ -299,7 +304,7 @@ public abstract class GameActivity extends AppCompatActivity implements Recognit
      * @param keywords Dictionary of words we want PocketSphinx to listen for.
      * @throws IOException Throws IOException if PocketSphinx cannot access the listening files.
      */
-    protected void setupRecognizer(File assetsDir, String[] keywords) throws IOException{
+    protected void setupKeywordRecognizer(File assetsDir, String[] keywords) throws IOException{
         //Set up recognizer
         recognizer = SpeechRecognizerSetup.defaultSetup()
                 .setAcousticModel(new File(assetsDir, "en-us-ptm"))
@@ -312,5 +317,60 @@ public abstract class GameActivity extends AppCompatActivity implements Recognit
         for(String keyword : keywords){
             recognizer.addKeyphraseSearch(keyword, keyword);
         }
+    }
+
+    /**
+     * Sets up the speech recognition engine in a background thread for speed and to not tie up
+     * the UI. Expects a wide variety of words in quick succession, therefore uses PocketSphinx's
+     * grammar functionality.
+     *
+     * @param grammar Name of file detailing the grammar we want PocketSphinx to listen for.
+     * TODO: Can the keyword and grammar setups be refactored to share more code?
+     */
+    protected void runGrammarRecognizerSetup(final String grammar) {
+        new AsyncTask<Void, Void, Exception>() {
+            protected Exception doInBackground(Void... params) {
+                try {
+                    Assets assets = new Assets(GameActivity.this);
+                    File assetDir = assets.syncAssets();
+                    setupGrammarRecognizer(assetDir, grammar);
+                } catch (IOException e) {
+                    return e;
+                }
+                return null;
+            }
+
+            protected void onPostExecute(Exception result){
+                if (result != null){
+                    Toast.makeText(getApplicationContext(),
+                            getResources().getString(R.string.recognizer_error),
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    recognizerReady();
+                    recognizer.startListening(GRAMMAR_SEARCH);
+                }
+            }
+        }.execute();
+    }
+
+    /**
+     * Sets the recognizer to listen for English words. Prepares the recognizer to be ready to
+     * listen for any word in the grammar file passed in.
+     *
+     * @param assetsDir Directory containing the PocketSphinx listening files.
+     * @param grammarFile File detailing grammar we want PocketSphinx to listen for.
+     * @throws IOException Throws IOException if PocketSphinx cannot access the listening files.
+     */
+    protected void setupGrammarRecognizer(File assetsDir, String grammarFile) throws IOException{
+        //Set up recognizer
+        recognizer = SpeechRecognizerSetup.defaultSetup()
+                .setAcousticModel(new File(assetsDir, "en-us-ptm"))
+                .setDictionary(new File(assetsDir, "cmudict-en-us.dict"))
+                .setRawLogDir(assetsDir)
+                .getRecognizer();
+        recognizer.addListener(this);
+
+        File fullGrammarFile = new File(assetsDir, grammarFile);
+        recognizer.addGrammarSearch(GRAMMAR_SEARCH, fullGrammarFile);
     }
 }

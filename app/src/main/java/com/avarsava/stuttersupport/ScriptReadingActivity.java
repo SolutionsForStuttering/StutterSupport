@@ -13,6 +13,7 @@ import android.text.TextPaint;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 
+import java.io.File;
 import java.util.Arrays;
 
 import edu.cmu.pocketsphinx.Hypothesis;
@@ -33,6 +34,11 @@ public class ScriptReadingActivity extends GameActivity {
      * Tag for debug logs.
      */
     private final String TAG = "ScriptReading";
+
+    /**
+     * Filename of grammar file.
+     */
+    private final String GRAMMAR_FILENAME = "scripts.gram";
 
     /**
      * The starting point to identify potential scripts to feed to the user.
@@ -85,7 +91,7 @@ public class ScriptReadingActivity extends GameActivity {
         setContentView(screen);
 
         String[] words = getScriptWords();
-        runRecognizerSetup(words, words);
+        runGrammarRecognizerSetup(GRAMMAR_FILENAME);
     }
 
     /**

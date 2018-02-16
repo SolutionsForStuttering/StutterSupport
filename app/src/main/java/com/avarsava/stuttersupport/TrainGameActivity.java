@@ -123,7 +123,7 @@ public class TrainGameActivity extends GameActivity{
         setContentView(screen);
 
         //set up speech recognition
-        runRecognizerSetup(currentString, getResources().getStringArray(R.array.calls));
+        runKeywordRecognizerSetup(currentString, getResources().getStringArray(R.array.calls));
     }
 
     /**
