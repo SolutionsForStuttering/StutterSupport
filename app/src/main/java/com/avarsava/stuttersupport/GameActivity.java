@@ -38,7 +38,7 @@ public abstract class GameActivity extends AppCompatActivity implements Recognit
     /**
      * Name for grammar-based search
      */
-    private final String GRAMMAR_SEARCH = "gram";
+    protected final String GRAMMAR_SEARCH = "gram";
 
     /**
      * Defines time since the timer has been reset.

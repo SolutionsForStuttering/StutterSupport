@@ -102,6 +102,11 @@ public class ScriptReadingActivity extends GameActivity {
         screen.setBackgroundImage(((ScriptReadingView)screen).getGameBg());
     }
 
+    @Override
+    public void onEndOfSpeech(){
+        Log.d(TAG, "onEndOfSpeech() called!");
+    }
+
     /**
      * When a word has been recognized, if the time is appropriate and the word is the current word
      * in the script, change the highlighting on the screen and reset the recognizer to anticipate
@@ -180,7 +185,7 @@ public class ScriptReadingActivity extends GameActivity {
 
         return newScript;
     }
-    
+
 
     /**
      * Drawing class responsible for drawing text with highlighting to screen. Updates as new words
