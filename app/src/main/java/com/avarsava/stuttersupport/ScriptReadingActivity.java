@@ -90,7 +90,6 @@ public class ScriptReadingActivity extends GameActivity {
         screen.setBackgroundImage(((ScriptReadingView)screen).getInstructionBg());
         setContentView(screen);
 
-        String[] words = getScriptWords();
         runGrammarRecognizerSetup(GRAMMAR_FILENAME);
     }
 
@@ -162,7 +161,7 @@ public class ScriptReadingActivity extends GameActivity {
      */
     private void resetRecognizer() {
         recognizer.stop();
-        recognizer.startListening(scriptWords[0].toLowerCase().replaceAll("[^a-zA-Z ]", ""));
+        recognizer.startListening(GRAMMAR_SEARCH);
     }
 
 
@@ -181,19 +180,7 @@ public class ScriptReadingActivity extends GameActivity {
 
         return newScript;
     }
-
-    /**
-     * Converts all the words in the script to lowercase for the sake of the voice engine.
-     *
-     * @return All words in script, in lowercase
-     */
-    private String[] getScriptWords(){
-        String[] allWords = currentScript.split(" ");
-        for(int i = 0; i < allWords.length; i++){
-            allWords[i] = allWords[i].toLowerCase().replaceAll("[^a-zA-Z ]", "");
-        }
-        return allWords;
-    }
+    
 
     /**
      * Drawing class responsible for drawing text with highlighting to screen. Updates as new words
